@@ -3,7 +3,6 @@
         <div class="side" :class="{ 'side-collapse': isCollapse }">
             <el-menu :unique-opened="uniqueOpened" :collapse="isCollapse" :background-color="style.backgroundColor"
                 :text-color="style.textColor" :active-text-color="style.activeTextColor">
-
                 <!-- 循环渲染主菜单项 -->
                 <el-submenu v-for="menu in menuList" :index="menu.mid" :key="menu.mid">
                     <!-- 渲染菜单的标题 -->
@@ -14,7 +13,8 @@
 
                     <!-- 循环渲染子菜单项 -->
                     <el-menu-item-group v-for="menuitem in menu.menu_item" :key="menuitem.mid">
-                        <el-menu-item :index="menuitem.path" :key="menuitem.mid" @click="navigateTo(menuitem.path)">
+                        <el-menu-item :index="menuitem.path" :key="menuitem.mid"
+                            @click="navigateTo(menu.title, menuitem.submenu, menuitem.path)">
                             {{ menuitem.submenu }}
                         </el-menu-item>
                     </el-menu-item-group>
@@ -28,13 +28,12 @@
                 <div class="breadcrumb">
                     <el-breadcrumb separator-class="el-icon-arrow-right">
                         <el-breadcrumb-item>首页</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+                        <el-breadcrumb-item v-if="titlecrumb1">{{ titlecrumb1 }}</el-breadcrumb-item>
+                        <el-breadcrumb-item v-if="titlecrumb2">{{ titlecrumb2 }}</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
                 <div class="admin">
-                    <el-button @click="toggleTheme">切换主题</el-button>
+                    <!-- <el-button @click="toggleTheme">切换主题</el-button> -->
                     <i @click="toggleFullScreen" class="el-icon-full-screen"></i>
                     <el-dropdown>
                         <span class="el-dropdown-link">
@@ -49,17 +48,20 @@
                     </el-dropdown>
                 </div>
             </div>
-            <div style="margin-top: 100px;">
-                
+            <div style="margin-top: 50px;">
+                <router-view></router-view>
             </div>
         </div>
     </div>
 </template>
-
+<script :src="srcimg"></script>
 <script>
+import axios from '../components/axios';  // 导入封装好的 http.js
 export default {
     data() {
         return {
+            titlecrumb1: "",
+            titlecrumb2: "",
             isCollapse: false,
             uniqueOpened: true,
             style: {
@@ -84,17 +86,20 @@ export default {
                         }
                     ]
                 }, {
-                    title: '导航二',
-                    icon: 'el-icon-s-order',
+                    title: 'ECharts图表',
+                    icon: 'el-icon-s-data',
                     mid: "2",  // 主菜单的唯一标识
                     menu_item: [
                         {
-                            submenu: '选项1',  // 子菜单名称
-                            path: '/index1'    // 子菜单对应的路径
+                            submenu: '柱状图',  // 子菜单名称
+                            path: '/ECharts/bar'    // 子菜单对应的路径
                         },
                         {
-                            submenu: '选项2',
-                            path: '/index2'
+                            submenu: '饼图',
+                            path: '/ECharts/pie'
+                        }, {
+                            submenu: '折线图',
+                            path: '/ECharts/line'
                         }
                     ]
                 }, {
@@ -112,7 +117,7 @@ export default {
                         }
                     ]
                 }
-            ]
+            ],
         }
     },
     watch: {
@@ -158,13 +163,20 @@ export default {
         handleClose(key, keyPath) {
             console.log("菜单关闭", key, keyPath);
         },
-        navigateTo(path) {
+        navigateTo(title, title2, path) {
+            this.titlecrumb1 = title;
+            this.titlecrumb2 = title2;
             // 使用 Vue Router 跳转到指定路径
-            this.$router.push(path);
-        }
+            this.$router.replace(path).catch((err) => {
+                if (err.name !== 'NavigationDuplicated') {
+                    // 处理其他类型的错误
+                    console.error(err);
+                }
+            });
+        },
     },
     created() {
-        console.log(this.$route);
+        console.log(this.$route.matched);
 
     },
     mounted() {
@@ -176,114 +188,116 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-/* 你可以在这里添加自定义样式 */
 .page {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 
-.side {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 200px;
-    overflow: auto;
-    transition: width 0.5s;
-    background: #304156;
-}
+    /* 你可以在这里添加自定义样式 */
+    .page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
 
-.side-collapse {
-    width: 64px;
-}
+    .side {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 200px;
+        overflow: auto;
+        transition: width 0.5s;
+        background: #001b36;
+    }
 
-.side .el-menu {
-    border: none;
-}
+    .side-collapse {
+        width: 64px;
+    }
 
-.main {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 200px;
-    transition: left 0.5s;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-width: 400px;
-    background-color: #fff;
-}
+    .side .el-menu {
+        border: none;
+    }
 
-.main-collapse {
-    left: 64px;
-}
+    .main {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 200px;
+        transition: left 0.5s;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 400px;
+        background-color: #fff;
+    }
 
-.title {
-    position: absolute;
-    height: 50px;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-}
+    .main-collapse {
+        left: 64px;
+    }
 
-.title::after {
-    content: " ";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-bottom: 1px solid #f2f2f2;
-}
+    .title {
+        position: absolute;
+        height: 50px;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+    }
 
-.iconfont {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    height: 30px;
-    width: 30px;
-    line-height: 30px;
-    text-align: center;
-    font-size: 26px;
-    cursor: pointer;
-    transition: transform 0.5s;
-}
+    .title::after {
+        content: " ";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
 
-.admin {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-
-    i {
+    .iconfont {
+        position: absolute;
+        top: 10px;
+        left: 10px;
         height: 30px;
         width: 30px;
         line-height: 30px;
-        font-size: 20px;
-        font-weight: bold;
         text-align: center;
+        font-size: 26px;
+        cursor: pointer;
+        transition: transform 0.5s;
     }
-}
 
-.breadcrumb {
-    position: absolute;
-    top: 10px;
-    left: 50px;
-    font-size: 26px;
-    height: 30px;
-    line-height: 30px;
+    .admin {
+        position: absolute;
+        top: 10px;
+        right: 10px;
 
-    .el-breadcrumb {
+        i {
+            height: 30px;
+            width: 30px;
+            line-height: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    }
+
+    .breadcrumb {
+        position: absolute;
+        top: 10px;
+        left: 50px;
+        font-size: 26px;
         height: 30px;
         line-height: 30px;
+
+        .el-breadcrumb {
+            height: 30px;
+            line-height: 30px;
+        }
     }
 }
 </style>
