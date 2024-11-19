@@ -1,5 +1,7 @@
 <template>
-    <div id="main"></div>
+    <div>
+        <div id="main"></div>
+    </div>
 </template>
 
 <script>
@@ -7,7 +9,7 @@ import * as echarts from 'echarts';
 export default {
     data() {
         return {
-
+            todos: "",
         }
     },
     methods: {

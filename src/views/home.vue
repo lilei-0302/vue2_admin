@@ -1,8 +1,8 @@
 <template>
     <div class="home-main">
         <div>
-          <img class="urlimg" :src="urlimg" alt="头像" loading="lazy">  
-          <span>超级管理员</span>
+            <img class="urlimg" :src="urlimg" alt="头像" loading="lazy">
+            <span>超级管理员</span>
         </div>
         <el-card class="dayEnglish" shadow="hover">
             <div class="title">每天一句励志英语</div>
@@ -11,6 +11,9 @@
                 <div class="zh">{{ dayEnglish.zh }}</div>
                 <img :src="dayEnglish.pic" alt="">
             </div>
+        </el-card>
+        <el-card  class="TodoList" shadow="hover">
+            <TodoList />
         </el-card>
         <el-card class="box-card" shadow="hover">
             <div class="baiduRD">
@@ -27,9 +30,13 @@
 </template>
 
 <script>
+import TodoList from '../components/TodoList.vue'
 import axios from '../components/axios';  // 导入封装好的 http.js
 export default {
     name: 'HomeMain',
+    components: {
+        TodoList
+    },
     data() {
         return {
             urlimg: '',
@@ -163,16 +170,24 @@ export default {
     .dayEnglish {
         margin-left: 10px;
         width: 400px;
-        .title{
+
+        .title {
             font-size: 20px;
             font-weight: bold;
         }
-        .en{
+
+        .en {
             font-weight: bold;
         }
+
         img {
             width: 150px;
         }
+    }
+    .TodoList{
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 400px;
     }
 }
 </style>

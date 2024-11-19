@@ -72,17 +72,17 @@ export default {
             isCollapse: false,
             menuList: [
                 {
-                    title: '导航一',
+                    title: '界面',
                     icon: 'el-icon-location',
                     mid: "1",  // 主菜单的唯一标识
                     menu_item: [
                         {
-                            submenu: '选项1',  // 子菜单名称
-                            path: '/index1'    // 子菜单对应的路径
+                            submenu: '二维码',  // 子菜单名称
+                            path: '/interface/qrcode'    // 子菜单对应的路径
                         },
                         {
-                            submenu: '选项2',
-                            path: '/index2'
+                            submenu: '画布',
+                            path: '/interface/carvos'
                         }
                     ]
                 }, {

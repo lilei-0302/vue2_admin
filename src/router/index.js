@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
+import Interface from "./interface";
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -25,7 +25,7 @@ const router = new VueRouter({
                 path: "/ECharts/line",
                 name: "折线图",
                 component: () => import('@/views/ECharts/line'),
-            }]
+            },...Interface],
         },
         {
             path: "/login",
