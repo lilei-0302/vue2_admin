@@ -26,6 +26,7 @@
                 </div>
             </div>
         </el-card>
+        <input v-focus style="width: 200px;height: 30px;border: 1px solid #000;margin-left: 10px;padding: 5px;"/>  <!-- 使用全局指令 -->
     </div>
 </template>
 

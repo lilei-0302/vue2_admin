@@ -49,6 +49,7 @@
                 </div>
             </div>
             <div style="margin-top: 50px;">
+                <!-- 当前路由的组件会渲染到这里 -->
                 <router-view></router-view>
             </div>
         </div>
@@ -103,18 +104,14 @@ export default {
                         }
                     ]
                 }, {
-                    title: '导航三',
+                    title: '内置内容',
                     icon: 'el-icon-s-operation',
                     mid: "3",  // 主菜单的唯一标识
                     menu_item: [
                         {
-                            submenu: '选项1',  // 子菜单名称
-                            path: '/index1'    // 子菜单对应的路径
+                            submenu: '内置指令',  // 子菜单名称
+                            path: '/builtIn/order'    // 子菜单对应的路径
                         },
-                        {
-                            submenu: '选项2',
-                            path: '/index2'
-                        }
                     ]
                 }
             ],

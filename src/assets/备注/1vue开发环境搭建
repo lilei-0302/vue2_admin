@@ -1,0 +1,118 @@
+1. 安装 Node.js 和 npm
+Vue.js 是基于 Node.js 的，因此你需要先安装 Node.js 和 npm（Node.js 的包管理器）。Node.js 提供了 JavaScript 运行时，npm 让你管理项目依赖。
+
+步骤：
+下载 Node.js：Node.js 官方网站。
+根据你使用的操作系统下载合适的版本。
+安装完成后，你可以在终端或命令行中通过以下命令检查 Node.js 和 npm 是否安装成功：
+node -v
+npm -v
+
+如果命令行显示版本号，说明安装成功。
+
+
+
+2. 安装 Vue CLI
+Vue CLI 是官方提供的脚手架工具，能够快速搭建 Vue 项目，自动配置好开发所需的基本依赖和构建工具。
+
+安装命令：
+在终端中执行以下命令来全局安装 Vue CLI：
+npm install -g @vue/cli
+
+安装完成后，可以通过以下命令检查是否安装成功：
+vue --version
+
+
+3. 创建 Vue 项目
+使用 Vue CLI 创建一个新的 Vue 项目。
+
+步骤：
+1.在终端中执行以下命令来创建一个新项目：
+
+vue create my-project
+my-project 是你项目的名称，你可以根据自己的需要修改它。
+
+
+2.然后，Vue CLI 会询问你是否要选择一个预设（默认配置）或者手动选择配置项。你可以选择：
+
+默认预设（推荐）：自动选择 Babel 和 ESLint。
+手动选择特性：选择更多特性，例如 TypeScript、Vue Router、Vuex、CSS预处理器等。你可以根据需要选择。
+
+3.创建完成后，你的项目会存储在 my-project 文件夹中。
+
+
+
+
+
+4. 启动开发服务器
+进入你创建的 Vue 项目文件夹，并启动开发服务器，查看 Vue 应用的效果。
+
+步骤：
+在终端中进入项目文件夹：
+cd my-project
+
+安装依赖
+npm install
+
+然后执行以下命令来启动开发服务器：
+
+npm run serve
+默认情况下，Vue 应用会启动在 http://localhost:8080，你可以在浏览器中访问这个地址查看应用。
+
+
+
+5. 项目结构简介
+创建好项目后，你会看到以下基本的文件结构：
+
+my-project/
+├── node_modules/           # 项目依赖
+├── public/                 # 静态文件（如 index.html）
+├── src/                    # 源代码文件
+│   ├── assets/             # 静态资源（图片、样式等）
+│   ├── components/         # Vue 组件
+│   ├── App.vue             # 根组件
+│   ├── main.js             # 入口文件
+│   ├── router.js           # 路由配置（如果使用 vue-router）
+│   └── stor.js             # 状态管理（如果使用 vuex）
+├── .gitignore              # Git 忽略文件
+├── package.json            # 项目配置文件，记录项目的依赖和脚本等
+└── README.md               # 项目说明文件
+src/main.js：是 Vue 应用的入口文件，负责创建 Vue 实例，并挂载根组件 App.vue。
+src/App.vue：根组件，Vue 应用的主要容器。
+public/index.html：HTML 模板文件，它包含了 Vue 应用挂载的 DOM 元素。
+
+
+
+
+
+6.使用 Git 管理代码（可选）
+为了更好地管理你的项目代码，建议使用 Git 进行版本控制。
+
+初始化 Git 仓库：
+在项目根目录下打开终端，执行以下命令：
+git init
+然后创建 .gitignore 文件，忽略掉 node_modules/ 和一些不必要的文件：
+
+txt
+node_modules/
+dist/
+*.log
+
+提交项目到 GitHub（可选）：
+如果你希望将项目托管在 GitHub 上，可以通过以下步骤：
+
+在 GitHub 上创建一个新仓库。
+在终端中执行以下命令，将本地代码提交到 GitHub：
+git remote add origin https://github.com/your-username/your-repo.git
+git add .
+git commit -m "initial commit"
+git push -u origin master
+
+
+
+7. 构建生产版本
+当你完成开发后，可以使用 Vue CLI 提供的构建命令来生成生产环境的代码。
+
+构建命令：
+npm run build
+这会在 dist/ 目录下生成一个经过优化的、可以部署到生产环境的文件。

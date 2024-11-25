@@ -1,0 +1,321 @@
+Vue Router 是 Vue.js 的官方路由管理工具，它使得你能够在单页面应用（SPA）中管理不同的视图或页面。Vue Router 允许你根据 URL 的变化来切换页面视图，它支持动态路由、嵌套路由、导航守卫、路由懒加载等多种功能，极大地增强了单页应用的灵活性和可维护性。
+
+Vue Router 基础知识
+1. 安装 Vue Router
+在 Vue 项目中安装 Vue Router:
+npm install vue-router
+
+2. 创建 Vue Router 实例
+在 Vue 项目中使用 Vue Router，我们需要进行以下步骤：
+
+导入 Vue 和 Vue Router
+定义路由规则：将路由和组件进行映射。
+创建路由实例：将路由实例挂载到 Vue 实例上。
+
+3. 路由的基本配置
+router目录下的index.js文件
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    routes: [
+        {
+            path: "/",
+            name: "首页",
+            component: () => import('@/views/index'),
+            children: [{
+                path: "/home",
+                name: "index",
+                component: () => import('@/views/home'),
+            }, {
+                path: "/ECharts/bar",
+                name: "EChartbar",
+                component: () => import('@/views/ECharts/bar'),
+            }, {
+                path: "/ECharts/pie",
+                name: "EChartpie",
+                component: () => import('@/views/ECharts/pie'),
+            }, {
+                path: "/ECharts/line",
+                name: "EChartbar",
+                component: () => import('@/views/ECharts/line'),
+            }],
+        },
+        {
+            path: "/login",
+            name: "login",
+            component: () => import('@/views/login'),
+        },
+    ]
+})
+export default router;
+
+涉及点
+new VueRouter({}) 是利用VueRouter()构造函数，里面是一个对象用于配置路由信息，在这里用new关键字是实例化这个路由对象 。（必须在vue的环境下使用）
+花括号里面的配置（这里只说常用的属性 routes 配置）：
+routes：指创建vue-router路由实例的配置项。用来配置多个route路由对象，值是数组对象的形式
+
+属性名	          值类型	                释义
+path	          string	                 配置路径（当url上有对应的路径就会显示对应视图）
+component         object	                 对应的视图即组件
+name	           string	                 命名此路由
+redirect	           string	                 用于重定向到某一路由上
+children	            Array< RouteConfig>	 嵌套路由（值与routes的值一样）
+
+4. 路由视图和链接
+<router-view>：一个占位符，用于显示当前路由匹配的组件。
+<router-link>：用于在不同路由之间导航，类似于传统 HTML 的 <a> 标签。
+<div id="app">
+  <nav>
+    <router-link to="/">Home</router-link>
+    <router-link to="/about">About</router-link>
+  </nav>
+
+  <!-- 当前路由的组件会渲染到这里 -->
+  <router-view></router-view>
+</div>
+
+5. 动态路由和参数
+Vue Router 支持动态路由，即可以在路由路径中包含参数。这对于显示特定内容非常有用。
+import User from './components/User.vue'
+
+const routes = [
+  { path: '/user/:id', component: User }  // 动态路由
+]
+
+在 User.vue 组件中，可以通过 this.$route.params.id 获取路由参数 id。
+export default {
+  computed: {
+    userId() {
+      return this.$route.params.id  // 获取路由参数
+    }
+  }
+}
+
+6. 嵌套路由
+Vue Router 允许你在一个路由中嵌套其他路由，这样可以实现多级路由。
+import Parent from './components/Parent.vue'
+import Child from './components/Child.vue'
+
+const routes = [
+  {
+    path: '/parent',
+    component: Parent,
+    children: [
+      {
+        path: 'child',
+        component: Child
+      }
+    ]
+  }
+]
+在 Parent.vue 中，我们需要在合适的位置放置 <router-view>，以便渲染嵌套的 Child 组件。
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <router-link to="/parent/child">Go to Child</router-link>
+    <router-view></router-view>  <!-- 渲染子路由 -->
+  </div>
+</template>
+
+7. 路由懒加载
+为了优化应用性能，Vue Router 支持懒加载路由组件。这样，只有当路由被访问时，相关的组件才会被加载。
+const routes = [
+  {
+    path: '/about',
+    component: () => import('./components/About.vue')  // 使用懒加载
+  }
+]
+
+8.// 全局守卫：所有路由跳转前触发
+router.beforeEach((to, from, next) => {
+  console.log('路由跳转前')
+  next()  // 调用 next() 继续路由跳转
+     let token = localStorage.getItem('token')
+     if (!token) {
+      next({
+       name: 'login'
+       })
+       return
+     }else{
+          next()  // 调用 next() 继续路由跳转
+     })
+
+编程式的导航
+1.router.push(location)
+该方法是通过传入的路径进行的切换视图，（这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。）
+该方法的参数可以是一个字符串路径，或者一个描述地址的对象，和点击< router-link :to="…">是一样的
+当执行到此方法是它就会根据你提供分路径进行在vueRouter中匹配，并显示对应的视图
+例：
+// 字符串
+this.$router.push('/home/first')
+// 对象
+this.$router.push({ path: '/home/first' })
+
+2.router.replace(location)
+该方法跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 ——— 替换掉当前的 history 记录。
+// 字符串
+this.$router.replace('/home/first')
+// 对象
+this.$router.replace({ path: '/home/first' })
+
+3.router.go(number)
+这个方法的参数是一个整数，意思是在 history 记录中向前或者后退多少步，类似 window.history.go(number)。
+就相当于你点击了浏览器上的后退按钮的效果一样，只不过这个方法可以设置后退几步，而浏览器上面那个只能history里的顺序一步步后退
+例：
+// 在浏览器记录中前进一步，等同于 history.forward()
+router.go(1)
+// 后退一步记录，等同于 history.back()
+router.go(-1)
+// 前进 3 步记录
+router.go(3)
+
+
+示例：完整的 Vue Router 使用案例
+1. 项目结构
+src/
+  ├── assets/
+  ├── components/
+  │   ├── Home.vue
+  │   ├── About.vue
+  │   ├── User.vue
+  │   └── Parent.vue
+  ├── App.vue
+  ├── main.js
+  └── router.js
+
+2. router.js (定义路由配置)
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from './components/Home.vue'
+import About from './components/About.vue'
+import User from './components/User.vue'
+import Parent from './components/Parent.vue'
+import Child from './components/Child.vue'
+
+Vue.use(VueRouter)
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About },
+  { path: '/user/:id', component: User },
+  {
+    path: '/parent',
+    component: Parent,
+    children: [
+      { path: 'child', component: Child }
+    ]
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+
+
+3. main.js (挂载路由)
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  router
+}).$mount('#app')
+
+4. App.vue (应用的主模板)
+<template>
+  <div id="app">
+    <nav>
+      <router-link to="/">Home</router-link>
+      <router-link to="/about">About</router-link>
+      <router-link to="/user/123">User 123</router-link>
+      <router-link to="/parent/child">Parent > Child</router-link>
+    </nav>
+
+    <router-view></router-view>  <!-- 路由视图 -->
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+5. Home.vue (首页)
+<template>
+  <div>
+    <h1>Home Page</h1>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Home'
+}
+</script>
+
+6. About.vue (关于页面)
+<template>
+  <div>
+    <h1>About Page</h1>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'About'
+}
+</script>
+
+7. User.vue (用户页面)
+<template>
+  <div>
+    <h1>User ID: {{ userId }}</h1>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'User',
+  computed: {
+    userId() {
+      return this.$route.params.id
+    }
+  }
+}
+</script>
+
+8. Parent.vue (父组件)
+<template>
+  <div>
+    <h1>Parent Component</h1>
+    <router-link to="/parent/child">Go to Child</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Parent'
+}
+</script>
+
+9. Child.vue (子组件)
+<template>
+  <div>
+    <h1>Child Component</h1>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Child'
+}
+</script>

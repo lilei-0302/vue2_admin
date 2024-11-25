@@ -1,0 +1,209 @@
+Vue 的状态管理通常使用 Vuex 来实现。Vuex 是 Vue.js 的官方状态管理库，专为 Vue.js 应用设计，提供了集中式的存储管理，能够帮助你在多组件之间共享状态，并保持状态的可追踪性。
+
+Vuex 概述
+Vuex 的核心概念主要包括：
+
+state：状态数据，Vuex 用来存储应用的状态。
+getters：获取状态的数据，可以用来计算派生状态。
+mutations：修改状态的方法，只有 mutation 可以直接修改 state。
+actions：处理异步操作并调用 mutations 进行状态的变更。
+
+1. 安装 Vuex
+首先，我们需要安装 Vuex：
+npm install vuex
+
+2. Vuex 基本配置
+我们来创建一个简单的 Vue 应用，演示如何使用 Vuex 进行状态管理。这个例子中，我们会实现一个（Todo）列表，能够添加和删除Todo。
+
+3. 项目结构
+src/
+  ├── assets/
+  ├── components/
+  │   ├── TodoList.vue
+  │   └── TodoItem.vue
+  ├── store/
+  │   └── index.js
+  ├── App.vue
+  └── main.js
+
+4. 代码实现
+4.1 store/index.js（Vuex Store 配置）
+
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+// 定义 Vuex 的 Store
+export default new Vuex.Store({
+  state: {
+    todos: []  // 保存所有的（Todo）列表
+  },
+  getters: {
+    // 获取所有（Todo）列表
+    allTodos: (state) => state.todos,
+    // 获取（Todo）列表数量
+    todosCount: (state) => state.todos.length
+  },
+  mutations: {
+    // 添加一个Todo
+    ADD_TODO(state, todo) {
+      state.todos.push(todo)
+    },
+    // 删除一个Todo
+    REMOVE_TODO(state, index) {
+      state.todos.splice(index, 1)
+    },
+    // 清空所有Todo
+    CLEAR_TODOS(state) {
+      state.todos = []
+    }
+  },
+  actions: {
+    // 异步添加Todo
+    async addTodoAsync({ commit }, todo) {
+      setTimeout(() => {
+        commit('ADD_TODO', todo)
+      }, 1000)
+    },
+    // 异步删除Todo
+    async removeTodoAsync({ commit }, index) {
+      setTimeout(() => {
+        commit('REMOVE_TODO', index)
+      }, 1000)
+    }
+  }
+})
+
+4.2 main.js（Vue 实例挂载）
+import Vue from 'vue'
+import App from './App.vue'
+import store from './store'
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  store  // 将 Vuex store 注入到 Vue 实例中
+}).$mount('#app')
+
+4.3 App.vue（主组件）
+<template>
+  <div id="app">
+    <h1>Vuex Todo List</h1>
+    <TodoList />
+  </div>
+</template>
+
+<script>
+import TodoList from './components/TodoList.vue'
+
+export default {
+  name: 'App',
+  components: {
+    TodoList
+  }
+}
+</script>
+
+4.4 TodoList.vue（Todo列表组件）
+html
+<template>
+  <div>
+    <div>
+      <input v-model="newTodo" placeholder="Add a new todo" @keyup.enter="addTodo" />
+      <button @click="addTodo">Add Todo</button>
+    </div>
+
+    <ul>
+      <li v-for="(todo, index) in todos" :key="index">
+        <TodoItem :todo="todo" :index="index" @remove="removeTodo" />
+      </li>
+    </ul>
+
+    <div v-if="todosCount > 0">
+      <button @click="clearTodos">Clear All</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import TodoItem from './TodoItem.vue'
+
+export default {
+  name: 'TodoList',
+  components: {
+    TodoItem
+  },
+  data() {
+    return {
+      newTodo: ''  // 用于绑定输入框的Todo内容
+    }
+  },
+  computed: {
+    // 获取所有Todo
+    todos() {
+      return this.$store.getters.allTodos
+    },
+    // 获取Todo数量
+    todosCount() {
+      return this.$store.getters.todosCount
+    }
+  },
+  methods: {
+    // 添加Todo
+    addTodo() {
+      if (this.newTodo.trim() !== '') {
+        this.$store.dispatch('addTodoAsync', this.newTodo.trim())
+        this.newTodo = ''  // 添加后清空输入框
+      }
+    },
+    // 删除Todo
+    removeTodo(index) {
+      this.$store.dispatch('removeTodoAsync', index)
+    },
+    // 清空所有Todo
+    clearTodos() {
+      this.$store.commit('CLEAR_TODOS')
+    }
+  }
+}
+</script>
+
+4.5 TodoItem.vue（Todo项组件）
+<template>
+  <li>
+    {{ todo }}
+    <button @click="remove">Delete</button>
+  </li>
+</template>
+
+<script>
+export default {
+  name: 'TodoItem',
+  props: {
+    todo: String,
+    index: Number
+  },
+  methods: {
+    // 触发删除事件
+    remove() {
+      this.$emit('remove', this.index)
+    }
+  }
+}
+</script>
+5. 运行效果
+你可以通过输入框添加新的Todo，点击按钮后它们会显示在列表中。
+点击 "Delete" 按钮可以删除对应的Todo。
+如果点击 "Clear All" 按钮，所有Todo会被清空。
+
+6. 代码解析
+Store（状态管理）部分
+State：存储应用的状态数据，todos 用来保存Todo。
+Getters：allTodos 返回所有的Todo，todosCount 返回Todo的数量。
+Mutations：用于同步修改 state，如添加Todo、删除Todo。
+Actions：用于处理异步操作，addTodoAsync 和 removeTodoAsync 在延迟后通过 commit 调用 mutations 来改变 state。
+组件部分
+TodoList.vue：展示Todo列表，支持添加、删除、清空Todo。
+TodoItem.vue：展示单个Todo，并提供删除按钮。

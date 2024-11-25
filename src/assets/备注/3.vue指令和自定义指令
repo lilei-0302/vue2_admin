@@ -1,0 +1,172 @@
+指令
+就是vue事先定义好的，就是对dom元素下命令，拿来用即可
+
+注意：指令都是以 v-** 格式开头
+<body>
+	<div v-**=""></div>
+</body>
+v-text
+相当于原生js中的innerText属性，将指定的值填充到标签中，会覆盖之前的内容
+
+
+
+v-html
+相当于原生js中的innerHTML属性，将指定的值填充到标签中，会覆盖之前的内容，可解析标签元素
+
+
+
+v-show
+根据条件是真或假，来判断元素是否显示，改变的是css样式display:none|block，它只支持布尔值
+
+
+
+v-if
+根据条件是真或者假，来判断元素是否被渲染，true可以看到这个节点，false该节点不存在，通常与一下两个指令相配合使用（理解成原生js的if…else if…else即可）
+
+v-else-if
+当v-if条件不成立此指令接着执行判断
+v-else
+当v-if和v-else-if都不成立执行此指令
+
+
+
+v-for
+可对一组数据进行迭代输出（可迭代的数据都有下标）
+<!-- html代码 -->
+<div id="app">
+  <h1 v-for="item in datas">{{item}}</h1>
+</div>
+以下是各种值的使用：
+
+1.值是数组
+<p v-for="(item,index) in list" :key="index">--索引值--{{i}}   --每一项--{{item}}</p>
+
+2.值是数组对象
+<p v-for="(user,index) in listObj" :key="index">--id--{{user.id}}   --姓名--{{user.name}}</p>
+<!-- 
+	user 是迭代出的每个对象
+	user.id 则是获取这个对象里的属性
+-->
+
+3.值是对象
+<p v-for="(val,key,index) in user" :key="index">--键是--{{key}}--值是--{{val}}</p>
+<!-- 与其它迭代不一样的是，迭代对象可以得出三个
+ val 对象里属性对应的值
+ key 对象里的属性也称为键
+ index 就是下标了
+ -->
+
+4.值是数值
+<p v-for="(count,index) in 10" :key="index">这是第{{count}}次循环</p>
+<!-- 
+ 	注意：如果使用v-for迭代数字的话，前面 count 的值从 1 开始
+ -->
+
+5.值是字符串
+<p v-for="(value,index) in str" :key="index">{{value}}---{{index}}</p>
+
+
+
+
+v-on
+用于为一个元素绑定事件 可简写为“@”（原生js的所有事件去掉on都可以使用）
+格式：v-on:click=”方法名”，
+简写：@click=”方法名”,
+
+
+
+v-bind
+用于为元素动态绑定属性 可简写为“:” （绑定的属性它的值是动态变化的）
+被绑定的属性它的值支持javascript表达式
+格式： v-bind:属性名=”属性值”，
+简写： :属性名=”属性值”，
+其中在绑定 class 或 style attribute（属性） 时，支持其它类型的值，如数组或对象。
+
+绑定class属性
+参数可支持对象，数组
+有几点要注意下：
+1、 普通class属性可以添加多个值，但被绑定以后只能添加一个，可通过数组形式添加多个
+2、 参数是对象，对象中属性值是一个布尔值，表示是否留下该类名，true会把属性留下，false则相反
+绑定style属性
+参数可支持对象，数组
+注意：
+1、CSS属性名必须用驼峰命名法（官方文档写的是既可以用驼峰也可以用 短横分隔命名法），但是用短横分隔是会报错的
+2、当用对象时属性名必须是css样式的驼峰命名，值则是在vue实例中定义的样式
+
+
+
+v-model
+实现了双向绑定，可以获取表单中输入的value值
+注意：只限制在<input>、<select>、<textarea>、components中使用
+
+常用的修饰符
+  .number 输入字符串转为有效的数字
+  .trim 输入首尾空格过滤
+
+
+
+
+
+自定义组件
+1. 全局指令
+首先，我们来创建一个全局指令，它可以在任何地方使用。
+
+全局指令注册
+// main.js 或入口文件
+import Vue from 'vue'
+
+// 注册全局指令
+Vue.directive('focus', {
+  // 当绑定元素插入到 DOM 中时调用
+  inserted(el) {
+    // 让元素获取焦点
+    el.focus()
+  }
+})
+
+// 创建 Vue 实例
+new Vue({
+  el: '#app',
+  template: '<input v-focus />'  // 在模板中使用全局指令
+})
+在上面的代码中，Vue.directive('focus', {...}) 通过全局方式注册了一个名为 focus 的指令。当一个元素绑定了 v-focus 时，inserted 钩子会自动触发，元素会获得焦点。
+
+使用全局指令
+html
+<div id="app">
+  <input v-focus />  <!-- 使用全局指令 -->
+</div>
+这段 HTML 代码中的 <input v-focus /> 会在页面加载时自动聚焦。
+
+2. 局部指令
+接下来，我们展示如何在组件中定义局部指令，它只在当前组件内部生效。
+
+局部指令实现
+javascript
+// 在某个组件中注册局部指令
+export default {
+  directives: {
+    focus: {
+      // 当绑定元素插入到 DOM 中时调用
+      inserted(el) {
+        el.focus()
+      }
+    }
+  },
+  template: `
+    <div>
+      <input v-focus />  <!-- 使用局部指令 -->
+    </div>
+  `
+}
+在上面的代码中，我们在组件的 directives 选项中定义了一个 focus 指令。这个指令只在当前组件中有效。
+
+父组件中使用局部指令
+html
+<div id="app">
+  <MyComponent />  <!-- 这是一个子组件，里面使用了局部指令 -->
+</div>
+MyComponent 组件内部的 v-focus 只会在该组件的模板中生效，不会影响到其他地方。
+
+全局指令：通过 Vue.directive() 注册，作用于整个应用，可以在任何组件中使用。
+局部指令：通过组件的 directives 选项注册，作用于该组件内部，只能在当前组件模板中使用。

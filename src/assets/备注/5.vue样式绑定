@@ -1,0 +1,116 @@
+在 Vue.js 中，可以使用多种方法绑定样式，常见的方式包括：
+
+1. 对象语法绑定样式
+可以使用对象语法动态绑定多个样式属性，值为 true 或 false 来控制样式的开启或关闭。
+
+<template>
+  <div :style="styleObject">Hello World</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isActive: true,
+      styleObject: {
+        color: 'red',
+        fontSize: this.isActive ? '20px' : '14px',
+      }
+    }
+  }
+}
+</script>
+
+
+
+
+2. 数组语法绑定样式
+如果需要绑定多个样式对象，可以使用数组语法。这将把多个样式对象合并为一个。
+
+<template>
+  <div :style="[styleObject1, styleObject2]">Hello World</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      styleObject1: {
+        color: 'blue',
+      },
+      styleObject2: {
+        fontSize: '18px',
+      }
+    }
+  }
+}
+</script>
+
+
+
+
+3. 条件绑定样式
+可以根据某个条件动态切换样式。通过 v-bind:class 或 v-bind:style 来进行条件绑定。
+
+<template>
+  <div :style="{ color: isActive ? 'green' : 'gray' }">Hello World</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isActive: true
+    }
+  }
+}
+</script>
+
+
+4. 绑定 CSS 类名
+Vue 也提供了绑定 class 的能力，除了使用 v-bind:style，你也可以通过 v-bind:class 来绑定动态类名。
+
+<template>
+  <div :class="{ active: isActive, 'text-bold': isBold }">Hello World</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isActive: true,
+      isBold: false
+    }
+  }
+}
+</script>
+
+<style>
+.active {
+  color: green;
+}
+.text-bold {
+  font-weight: bold;
+}
+</style>
+
+
+
+
+5. 使用 v-bind 直接绑定样式
+你也可以直接使用 v-bind:style 来绑定一个对象样式，或者传入动态的字符串。
+
+<template>
+  <div v-bind:style="{ backgroundColor: bgColor, fontSize: fontSize }">Hello World</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      bgColor: 'blue',
+      fontSize: '16px'
+    }
+  }
+}
+</script>

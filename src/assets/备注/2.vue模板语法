@@ -1,0 +1,78 @@
+一、Vue.js 模板语法
+Vue.js 的模板是基于 HTML 的语法，可以通过双花括号 {{}} 来插入变量，使用指令来绑定 DOM 元素的行为或动态更新。
+
+1. 插值表达式（Interpolation）
+插值表达式允许将 JavaScript 表达式的结果渲染到 HTML 模板中。最常见的是使用双大括号 {{}}。
+
+html
+<div id="app">
+  <p>{{ message }}</p>
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello, Vue!'
+    }
+  })
+</script>
+
+
+
+2. HTML 元素绑定（v-bind）
+v-bind 指令用于动态绑定元素的属性。例如，绑定 href、src 等属性：
+
+<a v-bind:href="url">Click me</a>
+
+这会将 url 的值绑定到 <a> 标签的 href 属性。
+
+简写方式：
+<a :href="url">Click me</a>
+
+
+
+
+3. 事件绑定（v-on）
+v-on 指令用于监听 DOM 事件并触发方法。常用于绑定点击、鼠标事件等：
+
+<button v-on:click="handleClick">Click me</button>
+
+简写方式：
+<button @click="handleClick">Click me</button>
+
+
+
+
+
+4. 条件渲染（v-if / v-else / v-show）
+v-if 和 v-show 用于条件渲染。v-if 完全移除或添加 DOM 元素，而 v-show 则是通过 CSS 的 display 属性来控制元素显示与否。
+
+<p v-if="seen">Now you see me</p>
+v-else 用于 v-if 配对：
+
+<p v-if="seen">Now you see me</p>
+<p v-else>Now you don't</p>
+v-show 是基于 CSS 的方式进行显示控制：
+
+<p v-show="seen">Visible</p>
+
+
+5. 列表渲染（v-for）
+v-for 用于根据数组或对象渲染列表：
+
+<ul>
+  <li v-for="item in items" :key="item.id">{{ item.name }}</li>
+</ul>
+其中 key 是渲染列表时的一个特殊属性，用来提高渲染效率。
+
+
+
+6. 双向数据绑定（v-model）
+v-model 用于在表单控件元素和数据之间创建双向绑定。通常用于输入框、选择框等表单元素：
+
+<input v-model="message" />
+<p>The message is: {{ message }}</p>
+当用户在输入框中输入内容时，message 会自动更新，反之，message 的变化也会实时更新到输入框。
+
+

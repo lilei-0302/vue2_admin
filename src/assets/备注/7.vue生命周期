@@ -1,0 +1,125 @@
+Vue 的生命周期钩子是 Vue 实例在其生命周期中的各个阶段自动调用的函数。
+它们允许开发者在特定时刻执行代码，以便做一些初始化、更新或清理工作。
+下面我会详细说明每个生命周期钩子的作用及常用的代码示例。
+
+
+
+Vue的生命周期包括以下几个主要阶段：
+
+beforeCreate：实例初始化后，数据观测和事件/侦听器配置之前。
+created：实例创建完成后，数据观测和事件/侦听器配置完成。
+beforeMount：挂载开始之前，相关的 DOM 未生成。
+mounted：挂载完成，DOM 已经生成，可进行操作。
+beforeUpdate：数据变化后，DOM 更新前。
+updated：数据变化后，DOM 更新完成。
+beforeDestroy：实例销毁前，清理前的操作。
+destroyed：实例销毁后，清理后的状态。
+平常常用的生命周期钩子有：
+ mounted（初始化完成时，通常用于 API 请求）、
+ beforeDestroy（组件销毁前，通常用于清理定时器等）和 updated（数据变化后处理）。
+
+
+ 1. beforeCreate
+作用：Vue 实例被创建之后，数据观测和事件/侦听器配置之前。此时 data 和 methods 还不可访问。
+
+平常用法：一般很少使用。可以用于一些初始化逻辑，比如插件的初始化，但通常不太依赖这个钩子。
+
+beforeCreate() {
+  console.log("beforeCreate: 实例初始化后");
+}
+
+
+
+2. created
+作用：实例创建完成后，数据观测和事件/侦听器配置完成。此时 data 和 methods 已经可以访问，但 DOM 还未生成。
+
+平常用法：通常用来进行数据初始化，发起 API 请求等。
+
+created() {
+  console.log("created: 实例已创建，数据已设置");
+  // 发起 API 请求
+  this.fetchData();
+}
+
+
+
+3. beforeMount
+作用：在挂载开始之前，相关的 DOM 元素尚未创建。
+
+平常用法：一般不太常用。可以用于在 DOM 渲染前做一些准备工作。
+
+beforeMount() {
+  console.log("beforeMount: 即将挂载到 DOM");
+}
+
+
+
+4. mounted
+作用：实例被挂载后，DOM 已经渲染完成。此时可以访问和操作实际的 DOM 元素。
+
+平常用法：常用来做 DOM 操作、初始化第三方库，或者发起 AJAX 请求等。
+
+mounted() {
+  console.log("mounted: DOM 已挂载，可以操作 DOM");
+  // 操作 DOM 或初始化第三方插件
+  this.initializeChart();
+}
+
+
+
+5. beforeUpdate
+作用：数据更新时，在虚拟 DOM 重新渲染和打补丁之前调用。此时，你可以在 DOM 更新前对数据进行修改。
+
+平常用法：可以用于在数据变化时进行必要的准备工作。
+
+beforeUpdate() {
+  console.log("beforeUpdate: 数据即将更新，虚拟 DOM 更新前");
+}
+
+
+
+6. updated
+作用：数据变化后，DOM 已经更新。此时可以进行 DOM 操作，但要注意更新时可能会出现性能问题。
+
+平常用法：常用来进行数据变化后的一些操作，比如更新图表、滚动条的位置等。
+
+updated() {
+  console.log("updated: 数据更新后，DOM 已更新");
+  // 做一些基于更新后的 DOM 的操作
+  this.updateChart();
+}
+
+
+
+7. beforeDestroy / beforeUnmount（Vue 3 中的钩子名为 beforeUnmount）
+作用：实例销毁之前调用，可以在此时进行清理工作，例如清除定时器、移除事件监听等。
+
+平常用法：常用于清理操作，比如清除定时器、取消订阅事件、销毁第三方插件等。
+
+beforeDestroy() {
+  console.log("beforeDestroy: 即将销毁组件，清理资源");
+  // 清理定时器
+  clearInterval(this.timer);
+}
+
+
+
+
+8. destroyed / unmounted（Vue 3 中的钩子名为 unmounted）
+作用：实例销毁后调用。此时，所有的指令、事件监听器都被销毁，DOM 已经被清理。
+
+平常用法：通常用于销毁实例后的一些清理工作（例如清理全局事件等）。
+
+destroyed() {
+  console.log("destroyed: 实例已销毁，资源已清理");
+}
+
+
+
+常用生命周期钩子的总结：
+created：常用于数据初始化、API 请求等。
+mounted：常用于 DOM 操作、初始化第三方库、发起请求等。
+updated：常用于数据变化后的 DOM 操作，或基于更新后的数据做其他处理。
+beforeDestroy 或 beforeUnmount：常用于清理资源，例如清除定时器、取消事件监听等。
+
+
